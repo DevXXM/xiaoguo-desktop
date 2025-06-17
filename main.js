@@ -56,7 +56,7 @@ function createMainWindow() {
           btn.onclick = fn;
           return btn;
         };
-        container.appendChild(makeBtn('返回首页','返回首页',()=> location.href='https://www.xiaoguoai.cn'));
+        container.appendChild(makeBtn('🏠','返回首页',()=> location.href='https://www.xiaoguoai.cn'));
         container.appendChild(makeBtn('⟳','刷新页面',()=> location.reload()));
         document.body.appendChild(container);
       })();
