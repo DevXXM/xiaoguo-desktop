@@ -1,0 +1,50 @@
+{
+  "name": "xiaoguo-desktop",
+  "version": "1.2.29",                        
+  "description": "大嘴外语小果AI",
+  "author": "毛毛 <962212011@qq.com>",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "electron-store": "7.0.0",
+  },
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^26.0.16"
+  },
+  "build": {
+    "appId": "com.xiaoguoai.desktop",
+    "productName": "大嘴外语晓果AI",
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "package.json",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "assets/",
+        "to": "assets"
+      }
+    ],
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": ["nsis"]
+    },
+
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "DevXXM",  
+        "repo": "xiaoguo-desktop"         
+      }
+    ]
+  }
+}

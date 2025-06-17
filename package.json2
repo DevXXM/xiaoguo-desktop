@@ -1,0 +1,27 @@
+{
+  "name": "xiaoguoai-browser",
+  "version": "1.0.0",
+  "description": "Electron wrapper for xiaoguoai.cn with tray, print and full-screen support",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+	"build": "electron-builder"
+  },
+    "build": {
+    "appId": "com.dazui.app",
+    "productName": "大嘴外语晓果AI学习系统",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "build/icon.ico"
+    }
+  },
+  "dependencies": {
+    "electron": "^25.0.0"
+  }
+}
