@@ -1,21 +1,18 @@
 {
   "name": "xiaoguo-desktop",
-  "version": "1.2.35",
+  "version": "1.2.38",
   "description": "大嘴外语小果AI",
   "author": "毛毛 <962212011@qq.com>",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
-    "release": "electron-builder --win --x64 --publish=always"
+    "release": "electron-builder --win --x64 --publish=never"
   },
   "dependencies": {
     "electron-log": "^5.4.1",
-    "electron-store": "7.0.0",
     "electron-updater": "^6.6.2",
-    "fs-extra": "^11.3.0",
-    "graceful-fs": "^4.2.11",
-    "universalify": "^2.0.1"
+    "electron-store": "^8.1.0"
   },
   "devDependencies": {
     "electron": "^25.0.0",
@@ -31,8 +28,7 @@
     "files": [
       "main.js",
       "package.json",
-      "assets/**/*",
-      "node_modules/**/*"
+      "assets/**/*"
     ],
     "extraResources": [
       {
@@ -48,9 +44,8 @@
     },
     "publish": [
       {
-        "provider": "github",
-        "owner": "DevXXM",
-        "repo": "xiaoguo-desktop"
+        "provider": "generic",
+        "url": "http://mmapi.jxphp.com/static/xiaoguo-desktop/"
       }
     ]
   }
