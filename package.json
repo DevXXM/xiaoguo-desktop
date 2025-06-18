@@ -1,14 +1,16 @@
 {
   "name": "xiaoguo-desktop",
-  "version": "1.2.32",
+  "version": "1.2.35",
   "description": "大嘴外语小果AI",
   "author": "毛毛 <962212011@qq.com>",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "release": "electron-builder --win --x64 --publish=always"
   },
   "dependencies": {
+    "electron-log": "^5.4.1",
     "electron-store": "7.0.0",
     "electron-updater": "^6.6.2",
     "fs-extra": "^11.3.0",

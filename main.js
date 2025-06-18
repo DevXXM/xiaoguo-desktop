@@ -2,6 +2,57 @@
 const { app, BrowserWindow, Tray, Menu, globalShortcut, dialog } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
+const log = require('electron-log');
+
+// —— 自动更新日志 ——  
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+
+//
+// —— 代理 GitHub Releases，适用于国内网络 ——
+//
+autoUpdater.setFeedURL({
+  provider: 'generic',
+  // 这里指向你的 Release 资源目录，ghproxy 会帮你加速访问 GitHub
+  url: 'https://ghproxy.com/https://github.com/DevXXM/xiaoguo-desktop/releases/download'
+});
+
+//
+// —— 更新事件处理 ——  
+//
+autoUpdater.on('checking-for-update', () => {
+  log.info('AutoUpdater: 检测更新…');
+});
+autoUpdater.on('update-available', info => {
+  log.info('AutoUpdater: 发现新版本', info.version);
+  dialog.showMessageBox({
+    type: 'info',
+    title: '检测到新版本',
+    message: `发现新版本 ${info.version}，正在下载…`
+  });
+});
+autoUpdater.on('update-not-available', () => {
+  log.info('AutoUpdater: 未发现可用更新，当前版本：', app.getVersion());
+});
+autoUpdater.on('error', err => {
+  log.error('AutoUpdater 错误：', err);
+});
+autoUpdater.on('download-progress', progress => {
+  log.info(`AutoUpdater 下载进度: ${Math.floor(progress.percent)}%`);
+});
+autoUpdater.on('update-downloaded', info => {
+  log.info('AutoUpdater: 下载完成', info.version);
+  dialog.showMessageBox({
+    type: 'question',
+    title: '下载完成',
+    message: `版本 ${info.version} 下载完成，是否立即安装？`,
+    buttons: ['立即安装', '稍后再说']
+  }).then(({ response }) => {
+    if (response === 0) {
+      autoUpdater.quitAndInstall();
+    }
+  });
+});
 
 let mainWindow;
 let tray;
@@ -35,13 +86,9 @@ function createMainWindow() {
     }
   });
 
-  // 去掉系统默认菜单
   Menu.setApplicationMenu(null);
-
-  // 加载远程页面
   mainWindow.loadURL('https://www.xiaoguoai.cn');
 
-  // 页面加载完成后显示，并注入“🏠” & “⟳” 按钮
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
 
@@ -64,7 +111,6 @@ function createMainWindow() {
     mainWindow.webContents.executeJavaScript(injectCode).catch(console.error);
   });
 
-  // “关闭”时隐藏到托盘
   mainWindow.on('close', e => {
     if (!app.isQuiting) {
       e.preventDefault();
@@ -93,7 +139,7 @@ function setupTray() {
     { type: 'separator' },
     { label: '退出',      click: () => { app.isQuiting = true; app.quit(); } }
   ]);
-  tray.setToolTip('大嘴外语小果AI');
+  tray.setToolTip('大嘴外语晓果AI');
   tray.setContextMenu(contextMenu);
   tray.on('double-click', () => mainWindow.show());
 }
@@ -101,51 +147,23 @@ function setupTray() {
 // 注册全局快捷键
 function setupGlobalShortcuts() {
   globalShortcut.register('F11', () => {
-    if (mainWindow) {
-      mainWindow.setFullScreen(!mainWindow.isFullScreen());
-    }
+    if (mainWindow) mainWindow.setFullScreen(!mainWindow.isFullScreen());
   });
 }
-
-// —— 自动更新事件处理 ——  
-autoUpdater.on('checking-for-update', () => {
-  console.log('检查更新…');
-});
-autoUpdater.on('update-available', info => {
-  dialog.showMessageBox({
-    type: 'info',
-    title: '检测到新版本',
-    message: `发现新版本 ${info.version}，正在下载…`
-  });
-});
-autoUpdater.on('update-not-available', () => {
-  console.log('当前已是最新版本');
-});
-autoUpdater.on('error', err => {
-  console.error('自动更新出错:', err);
-});
-autoUpdater.on('download-progress', progress => {
-  console.log(`下载进度: ${Math.floor(progress.percent)}%`);
-});
-autoUpdater.on('update-downloaded', info => {
-  dialog.showMessageBox({
-    type: 'question',
-    title: '下载完成',
-    message: `版本 ${info.version} 下载完成，是否立即安装？`,
-    buttons: ['立即安装','稍后再说']
-  }).then(({ response }) => {
-    if (response === 0) {
-      autoUpdater.quitAndInstall();
-    }
-  });
-});
 
 app.whenReady().then(() => {
   createMainWindow();
   setupTray();
   setupGlobalShortcuts();
-  // 启动后立刻检查并下载更新
-  autoUpdater.checkForUpdatesAndNotify();
+
+  // 只有打包后才检查更新
+  if (app.isPackaged) {
+    log.info('应用已打包，开始检查更新…');
+    log.info('当前版本：', app.getVersion());
+    autoUpdater.checkForUpdatesAndNotify();
+  } else {
+    log.info('开发模式，不检查更新');
+  }
 });
 
 app.on('before-quit', () => app.isQuiting = true);
