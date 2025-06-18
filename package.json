@@ -1,6 +1,6 @@
 {
   "name": "xiaoguo-desktop",
-  "version": "1.2.39",
+  "version": "1.2.52",
   "description": "大嘴外语小果AI",
   "author": "毛毛 <962212011@qq.com>",
   "main": "main.js",
@@ -31,16 +31,17 @@
       "assets/**/*"
     ],
     "extraResources": [
-      {
-        "from": "assets/",
-        "to": "assets"
-      }
+      { "from": "assets/", "to": "assets" }
     ],
     "win": {
       "icon": "assets/icon.ico",
-      "target": [
-        "nsis"
-      ]
+      "target": ["nsis"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true
     },
     "publish": [
       {
